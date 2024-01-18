@@ -14,6 +14,14 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
+      - name: Cache
+        uses: actions/cache@v4.0.0
+        with:
+          # A list of files, directories, and wildcard patterns to cache and restore
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
       - uses: actions/checkout@v3
 
       - name: Set up Go
