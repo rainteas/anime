@@ -40,8 +40,8 @@ jobs:
         with:
           artifacts: "anime"
           token: ${{ secrets.ACCESS_TOKEN }}
-          tag: ${{ github.ref }}
-          name: Release ${{ github.ref }}
+          tag: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
 
