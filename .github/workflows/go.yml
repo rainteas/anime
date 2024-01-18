@@ -18,14 +18,13 @@ jobs:
     - name: Build
       run: CGO_ENABLED=1 GOOS=linux go build -a -ldflags '-extldflags "-static"' -o anime main.go
 
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v4.1.0
+    - name: Github Release
+      uses: elgohr/Github-Release-Action@v5
       with:
-        # Artifact name
-        name: anime
-        # A file, directory or wildcard pattern that describes what to upload
-        path: ./anime
-        # The desired behavior if no files are found using the provided path.
+        # The name of the release to publish
+        title: anime
+        # Directory of the repository that the should create the release
+        workdir: ./anime
 
                 
 
