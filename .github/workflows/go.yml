@@ -6,12 +6,10 @@ name: Go
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
   build:
-    name: Build
+    name: Build and Release
     runs-on: ubuntu-latest
     steps:
       - name: Cache
@@ -40,8 +38,8 @@ jobs:
         with:
           artifacts: "anime"
           token: ${{ secrets.ACCESS_TOKEN }}
-          tag: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
+          tag: main-${{ github.sha }}
+          name: Release main ${{ github.sha }}
           draft: false
           prerelease: false
 
