@@ -35,25 +35,13 @@ jobs:
       - name: Build
         run: CGO_ENABLED=1 GOOS=linux go build -a -ldflags '-extldflags "-static"' -o anime main.go
 
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Release and Upload Asset
+        uses: ncipollo/release-action@v1.13.0
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          artifacts: "anime"
+          token: ${{ secrets.ACCESS_TOKEN }}
+          tag: ${{ github.ref }}
+          name: Release ${{ github.ref }}
           draft: false
           prerelease: false
 
-      - name: Upload Release Asset
-        id: upload-release-asset 
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: ./anime
-          asset_name: anime
-          asset_content_type: application/octet-stream
