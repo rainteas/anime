@@ -1,0 +1,31 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Go
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+    runs-on: golang:1.20
+    steps:
+    
+    - name: Build
+      run: CGO_ENABLED=1 GOOS=linux go build -a -ldflags '-extldflags "-static"' -o anime main.go
+
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v4.1.0
+      with:
+        # Artifact name
+        name: anime
+        # A file, directory or wildcard pattern that describes what to upload
+        path: ./anime
+        # The desired behavior if no files are found using the provided path.
+
+                
+
