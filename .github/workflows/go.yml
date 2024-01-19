@@ -1,0 +1,45 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Go
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build and Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache
+        uses: actions/cache@v4.0.0
+        with:
+          # A list of files, directories, and wildcard patterns to cache and restore
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.20'
+
+      - name: Get dependencies
+        run: go mod download
+
+      - name: Build
+        run: CGO_ENABLED=1 GOOS=linux go build -a -ldflags '-extldflags "-static"' -o anime main.go
+
+      - name: Create Release and Upload Asset
+        uses: ncipollo/release-action@v1.13.0
+        with:
+          artifacts: "anime"
+          token: ${{ secrets.ACCESS_TOKEN }}
+          tag: main-${{ github.sha }}
+          name: Release main ${{ github.sha }}
+          draft: false
+          prerelease: false
+
