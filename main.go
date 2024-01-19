@@ -66,7 +66,7 @@ func main() {
 	newRss := rss.NewSubscriptionTools(config)
 
 	// ==获取订阅动漫数据==
-	subscribeToDataOnline, err := newRss.FetchRSSList(subscriptionAddress)
+	subscribeToDataOnline, err := newRss.FetchRSSListByGoroutine(subscriptionAddress)
 
 	if err != nil {
 		log.Fatalln("获取订阅信息失败:", err)

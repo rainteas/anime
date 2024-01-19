@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"sync/atomic"
 )
 
 // SubscriptionTools
@@ -85,6 +86,37 @@ func (r *SubscriptionTools) FetchRSSList(subscriptionAddress []model.RssMeta) ([
 		rssAnimeInfoList = append(rssAnimeInfoList, info...)
 
 	}
+	return rssAnimeInfoList, nil
+}
+
+// 开启线程获取订阅
+func (r *SubscriptionTools) FetchRSSListByGoroutine(subscriptionAddress []model.RssMeta) ([]*dto.RssAnimeInfo, error) {
+	var rssAnimeInfoList []*dto.RssAnimeInfo
+	numberOfTimesToObtainData := 0
+	readSubscriptionProgress := int32(0)
+	ch := make(chan []*dto.RssAnimeInfo, 20)
+	for _, meta := range subscriptionAddress {
+		go func(meta model.RssMeta) {
+			rssList, err := r.FetchRSS(meta.Url)
+			if err != nil {
+				log.Printf("name: %s url: %s Error fetching RSS: %v", meta.AnimeName, meta.Url, err)
+				ch <- nil
+				return
+			}
+			atomic.AddInt32(&readSubscriptionProgress, 1)
+			log.Printf("订阅获取进度: %.2f \n", float64(readSubscriptionProgress)/float64(len(subscriptionAddress))*100)
+			ch <- r.ConvertRssToAnimeInfo(meta.AnimeName, meta.Season, rssList)
+		}(meta)
+	}
+
+	for range subscriptionAddress {
+		info := <-ch
+		if info != nil {
+			rssAnimeInfoList = append(rssAnimeInfoList, info...)
+			numberOfTimesToObtainData++
+		}
+	}
+	close(ch)
 	return rssAnimeInfoList, nil
 }
 
