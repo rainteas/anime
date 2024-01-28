@@ -95,7 +95,8 @@ func main() {
 		}
 		torrents, err := downloader.AnimeByTorrents(torrent, dir)
 		if err != nil {
-			log.Fatalf("下载失败: 目录：%s 文件：%s 错误：%v", dir, info.AnimeName, err)
+			log.Printf("下载失败: 目录：%s 文件：%s 错误：%v", dir, info.AnimeName, err)
+			continue
 		}
 		log.Printf("下载成功: 目录：%s 文件：%s", dir, info.AnimeNameAndNumber)
 
