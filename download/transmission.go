@@ -52,6 +52,10 @@ func (td *TransmissionDownloader) AnimeByTorrents(torrent []byte, path string) (
 		log.Printf("添加种子时出错: %s", transmission.Result)
 		return nil, fmt.Errorf("添加种子时出错: %s", transmission.Result)
 	}
+	if transmission.Arguments.TorrentAdded.Id == 0 {
+		log.Printf("添加种子id为0")
+		return nil, fmt.Errorf("添加种子id为0")
+	}
 	torrentInfo := make(map[string]string, 5)
 	torrentInfo["hashString"] = transmission.Arguments.TorrentAdded.HashString
 	torrentInfo["id"] = fmt.Sprintf("%d", transmission.Arguments.TorrentAdded.Id)

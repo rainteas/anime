@@ -88,14 +88,14 @@ func main() {
 			updatedAnime = info.AnimeName
 			continue
 		}
-		dir := config.TransmissionDownloadDir + info.Season + "/" + info.AnimeName + "/"
+		dir := config.TransmissionDownloadDir + info.Season + "/" + strings.TrimSpace(info.AnimeName) + "/"
 		torrent, err := downloader.TorrentByPath(info.DownloadUrl)
 		if err != nil {
 			log.Fatal("TorrentByPath : ", err)
 		}
 		torrents, err := downloader.AnimeByTorrents(torrent, dir)
 		if err != nil {
-			log.Printf("下载失败: 目录：%s 文件：%s 错误：%v", dir, info.AnimeName, err)
+			log.Printf("下载失败: 目录：%s 文件：%s 错误：%v", dir, info.AnimeNameAndNumber, err)
 			continue
 		}
 		log.Printf("下载成功: 目录：%s 文件：%s", dir, info.AnimeNameAndNumber)
